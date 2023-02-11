@@ -13,7 +13,7 @@ import { RoutesService } from './routes.service';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
-import { Producer } from 'kafkajs';
+import { Producer } from '@nestjs/microservices/external/kafka.interface';
 
 @Controller('routes')
 export class RoutesController implements OnModuleInit {
@@ -40,7 +40,7 @@ export class RoutesController implements OnModuleInit {
     return this.routesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch(':id') // Patch - Parcial
   update(@Param('id') id: string, @Body() updateRouteDto: UpdateRouteDto) {
     return this.routesService.update(+id, updateRouteDto);
   }
@@ -56,6 +56,7 @@ export class RoutesController implements OnModuleInit {
 
   @Get(':id/start')
   startRoute(@Param('id') id: string) {
+    console.log(id);
     this.kafkaProducer.send({
       topic: 'route.new-direction',
       messages: [
@@ -79,6 +80,7 @@ export class RoutesController implements OnModuleInit {
       };
     },
   ) {
-    console.log(message.value);
+    console.log(1);
+    console.log(message);
   }
 }
